@@ -1,0 +1,93 @@
+Here's a reference of the hdfs dfs file system commands (equivalent to hadoop fs). Paths are HDFS paths unless noted.
+
+Listing and viewing
+
+Command	Explanation
+hdfs dfs -ls <path>	List files and directories in a path
+hdfs dfs -ls -R <path>	List recursively
+hdfs dfs -ls -h <path>	List with human-readable sizes
+hdfs dfs -cat <file>	Print file contents to the terminal
+hdfs dfs -tail <file>	Show the last 1 KB of a file
+hdfs dfs -head <file>	Show the first 1 KB of a file
+hdfs dfs -text <file>	Print a file as text (decodes zip/sequence files)
+hdfs dfs -stat <file>	Show file statistics (size, replication, mod time)
+Creating and writing
+
+Command	Explanation
+hdfs dfs -mkdir <dir>	Create a directory
+hdfs dfs -mkdir -p <dir>	Create a directory with parent directories
+hdfs dfs -touchz <file>	Create an empty (zero-length) file
+hdfs dfs -appendToFile <localsrc> <dst>	Append local file content to an HDFS file
+hdfs dfs -createSnapshot <dir> [name]	Create a snapshot of a snapshottable directory
+Uploading (local to HDFS)
+
+Command	Explanation
+hdfs dfs -put <localsrc> <dst>	Copy local file(s) to HDFS
+hdfs dfs -copyFromLocal <localsrc> <dst>	Same as -put
+hdfs dfs -moveFromLocal <localsrc> <dst>	Copy to HDFS, then delete the local file
+Downloading (HDFS to local)
+
+Command	Explanation
+hdfs dfs -get <src> <localdst>	Copy HDFS file(s) to the local file system
+hdfs dfs -copyToLocal <src> <localdst>	Same as -get
+hdfs dfs -getmerge <srcdir> <localdst>	Merge all files in an HDFS directory into one local file
+hdfs dfs -moveToLocal <src> <localdst>	Move to local (not implemented in most versions)
+Copying, moving, deleting
+
+Command	Explanation
+hdfs dfs -cp <src> <dst>	Copy within HDFS
+hdfs dfs -mv <src> <dst>	Move or rename within HDFS
+hdfs dfs -rm <file>	Delete a file (goes to trash if enabled)
+hdfs dfs -rm -r <dir>	Delete a directory recursively
+hdfs dfs -rm -skipTrash <path>	Delete permanently, bypassing trash
+hdfs dfs -rmdir <dir>	Delete an empty directory
+hdfs dfs -expunge	Empty the trash
+hdfs dfs -truncate <len> <file>	Truncate a file to the given length
+hdfs dfs -concat <target> <srcs>	Concatenate existing files into a target file
+Space and size
+
+Command	Explanation
+hdfs dfs -du <path>	Show size of files and directories
+hdfs dfs -du -s -h <path>	Show total size, human-readable
+hdfs dfs -df -h	Show capacity, used and free space of the file system
+hdfs dfs -count <path>	Count directories, files and bytes
+hdfs dfs -count -q <path>	Count with quota information
+Checks and comparison
+
+Command	Explanation
+hdfs dfs -test -e <path>	Test if a path exists (-d directory, -f file, -z zero length)
+hdfs dfs -checksum <file>	Show a file's checksum
+hdfs dfs -find <path> -name <pattern>	Find files matching a pattern
+Replication and block size
+
+Command	Explanation
+hdfs dfs -setrep <n> <path>	Change replication factor of a file
+hdfs dfs -setrep -w <n> <path>	Change replication and wait until it completes
+Permissions and ownership
+
+Command	Explanation
+hdfs dfs -chmod <mode> <path>	Change file permissions
+hdfs dfs -chown <user:group> <path>	Change owner and group
+hdfs dfs -chgrp <group> <path>	Change group
+hdfs dfs -getfacl <path>	Show access control lists
+hdfs dfs -setfacl -m <spec> <path>	Modify ACLs
+hdfs dfs -getfattr -d <path>	Show extended attributes
+hdfs dfs -setfattr -n <name> -v <value> <path>	Set an extended attribute
+Quotas and snapshots
+
+Command	Explanation
+hdfs dfs -setQuota / hdfs dfsadmin -setQuota <n> <dir>	Set a name quota (admin command, via dfsadmin)
+hdfs dfs -createSnapshot <dir> <name>	Create a snapshot
+hdfs dfs -deleteSnapshot <dir> <name>	Delete a snapshot
+hdfs dfs -renameSnapshot <dir> <old> <new>	Rename a snapshot
+Help and usage
+
+Command	Explanation
+hdfs dfs -help [cmd]	Show help for a command
+hdfs dfs -usage <cmd>	Show usage for a command
+Notes
+
+-setQuota and -setSpaceQuota are actually hdfs dfsadmin commands, not hdfs dfs. Snapshot allow/disallow (hdfs dfsadmin -allowSnapshot <dir>) is also an admin step you need before creating snapshots.
+-put, -copyFromLocal, -get, and -copyToLocal accept -f to overwrite existing destination files.
+Wildcards like * work in paths, but quote them in the shell (e.g. '/data/*.txt') so your local shell doesn't expand them first.
+Some commands (like -head, -truncate, -concat) depend on your Hadoop version; run hdfs dfs -help to see what yours supports.
